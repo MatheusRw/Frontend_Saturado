@@ -1,0 +1,349 @@
+.app {
+  min-height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 1.25rem 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 0 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-mark {
+  width: 32px;
+  height: 32px;
+  background: #1e1e1e;
+  border: 0.5px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logo-name {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  color: var(--text);
+}
+
+.logo-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-hint);
+  letter-spacing: 0.04em;
+}
+
+/* ── Hero ── */
+.hero {
+  padding: 1.5rem 0 0.5rem;
+}
+
+.hero-title {
+  font-size: clamp(28px, 8vw, 36px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -1px;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.hero-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ── Card ── */
+.card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+/* ── Fields ── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-row {
+  display: flex;
+  gap: 10px;
+}
+
+.field-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-hint);
+}
+
+.input {
+  height: 42px;
+  padding: 0 12px;
+  background: var(--surface2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font-display);
+  color: var(--text);
+  width: 100%;
+  transition: border-color 0.15s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.input:focus {
+  border-color: var(--border-mid);
+}
+
+.input option {
+  background: #1e1e1e;
+  color: var(--text);
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  width: 100%;
+  height: 46px;
+  background: var(--text);
+  color: #0a0a0a;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: opacity 0.15s, transform 0.1s;
+  margin-top: 0.25rem;
+}
+
+.btn-primary:hover:not(.disabled) {
+  opacity: 0.88;
+}
+
+.btn-primary:active:not(.disabled) {
+  transform: scale(0.98);
+}
+
+.btn-primary.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* ── Erro ── */
+.erro-card {
+  border-color: rgba(226,75,74,0.25);
+}
+
+.erro-text {
+  font-size: 14px;
+  color: var(--red-text);
+}
+
+.erro-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-top: 4px;
+}
+
+/* ── Resultado ── */
+.resultado-card {
+  animation: fadeUp 0.3s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.resultado-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 0.25rem;
+}
+
+.resultado-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-hint);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+
+.resultado-titulo {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  color: var(--text);
+}
+
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Termômetro ── */
+.thermo-wrap {
+  margin: 0.25rem 0;
+}
+
+.thermo-track {
+  height: 8px;
+  background: var(--surface2);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.thermo-fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+}
+
+.thermo-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-hint);
+  letter-spacing: 0.02em;
+}
+
+/* ── Métricas ── */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.metric {
+  background: var(--surface2);
+  padding: 0.75rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.metric-val {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1;
+}
+
+.metric-lbl {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-hint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ── Insight ── */
+.insight-box {
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  padding: 0.875rem 1rem;
+}
+
+.insight-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ── CTA Premium ── */
+.btn-premium {
+  width: 100%;
+  height: 44px;
+  background: transparent;
+  border: 0.5px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-premium:hover {
+  background: var(--surface2);
+  color: var(--text);
+}
+
+.btn-premium-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  background: rgba(239,159,39,0.15);
+  color: var(--amber-text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ── Footer ── */
+.footer {
+  margin-top: auto;
+  padding: 1rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-hint);
+  text-align: center;
+}
+
+/* ── Responsivo ── */
+@media (max-width: 380px) {
+  .resultado-header {
+    flex-direction: column;
+  }
+  .thermo-labels {
+    font-size: 8px;
+  }
+}
