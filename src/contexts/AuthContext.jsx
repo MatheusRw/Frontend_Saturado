@@ -1,63 +1,63 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import api from '../services/api';
+import { createContext, useContext, useState, useEffect } from 'react'
+import { API_BASE } from '../services/api'
 
-const AuthContext = createContext();
+const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
 
+  // Recupera sessão salva ao carregar
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetchUserStatus();
-    } else {
-      setLoading(false);
+    const saved = localStorage.getItem('saturado_user')
+    const token = localStorage.getItem('saturado_token')
+    if (saved && token) {
+      try { setUser(JSON.parse(saved)) } catch {}
     }
-  }, []);
+    setLoading(false)
+  }, [])
 
-  const fetchUserStatus = async () => {
-    try {
-      const response = await api.get('/payments/subscription-status');
-      setUser(response.data);
-    } catch (error) {
-      localStorage.removeItem('token');
-    } finally {
-      setLoading(false);
-    }
-  };
+  async function login(email, password) {
+    const form = new FormData()
+    form.append('email', email)
+    form.append('password', password)
 
-  const login = async (email, password) => {
-    const formData = new URLSearchParams();
-    formData.append('email', email);
-    formData.append('password', password);
-    
-    const response = await api.post('/login', formData, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-    });
-    const { access_token } = response.data;
-    localStorage.setItem('token', access_token);
-    await fetchUserStatus();
-    return response.data;
-  };
+    const resp = await fetch(`${API_BASE}/login`, { method: 'POST', body: form })
+    const data = await resp.json()
 
-  const register = async (email, password) => {
-    const response = await api.post('/register', { email, password });
-    return response.data;
-  };
+    if (!resp.ok) throw new Error(data.detail || 'Erro ao fazer login')
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-  };
+    localStorage.setItem('saturado_token', data.access_token)
+    localStorage.setItem('saturado_user', JSON.stringify(data.user))
+    setUser(data.user)
+    return data.user
+  }
+
+  async function register(email, password) {
+    const form = new FormData()
+    form.append('email', email)
+    form.append('password', password)
+
+    const resp = await fetch(`${API_BASE}/register`, { method: 'POST', body: form })
+    const data = await resp.json()
+
+    if (!resp.ok) throw new Error(data.detail || 'Erro ao criar conta')
+    return data
+  }
+
+  function logout() {
+    localStorage.removeItem('saturado_token')
+    localStorage.removeItem('saturado_user')
+    setUser(null)
+  }
 
   return (
     <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
-  );
+  )
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  return useContext(AuthContext)
 }

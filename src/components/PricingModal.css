@@ -1,0 +1,114 @@
+.pricing-box {
+  padding-bottom: 2.5rem;
+}
+
+.pricing-card {
+  background: var(--surface2);
+  border: 0.5px solid var(--border-mid);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 1rem;
+}
+
+.pricing-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--amber-text);
+  background: rgba(239,159,39,0.12);
+  border: 0.5px solid rgba(239,159,39,0.25);
+  border-radius: var(--radius-pill);
+  padding: 3px 10px;
+  display: inline-block;
+  width: fit-content;
+  margin-bottom: 1rem;
+}
+
+.pricing-valor {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  margin-bottom: 1.25rem;
+}
+.pricing-moeda {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.pricing-num {
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  color: var(--text);
+  line-height: 1;
+  font-family: var(--font-display);
+}
+.pricing-periodo {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+.pricing-lista {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+  border-top: 0.5px solid var(--border);
+  padding-top: 1rem;
+}
+.pricing-lista li {
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.4;
+}
+.pricing-check {
+  color: var(--green-text);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.pricing-btn {
+  width: 100%;
+  height: 48px;
+  background: var(--text);
+  color: #0a0a0a;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 700;
+  font-family: var(--font-display);
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  letter-spacing: 0.01em;
+}
+.pricing-btn:hover { opacity: 0.88; }
+.pricing-btn:active { transform: scale(0.98); }
+
+.pricing-cancel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-hint);
+  text-align: center;
+  margin-top: 0.75rem;
+}
+
+.pricing-free {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
