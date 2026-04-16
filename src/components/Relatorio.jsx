@@ -13,12 +13,14 @@ const LOADING_STEPS = [
   { msg: 'Geocodificando localização...', pct: 15 },
   { msg: 'Buscando estabelecimentos no Google Maps...', pct: 40 },
   { msg: 'Calculando score de saturação...', pct: 60 },
-  { msg: 'Preparando listagem...', pct: 80 },
+  { msg: 'Analisando oportunidades por rua...', pct: 70 },
+  { msg: 'Preparando listagem...', pct: 85 },
   { msg: 'Finalizando relatório...', pct: 95 },
 ]
 
 export default function Relatorio({ cnae, municipio, raio_km, onVoltar }) {
   const [dados, setDados] = useState(null)
+  const [recomendacao, setRecomendacao] = useState(null)
   const [erro, setErro] = useState(null)
   const [step, setStep] = useState(0)
   const [pct, setPct] = useState(0)
@@ -27,7 +29,7 @@ export default function Relatorio({ cnae, municipio, raio_km, onVoltar }) {
   useEffect(() => {
     let stepIdx = 0
     let isMounted = true
-    
+
     setPct(LOADING_STEPS[0].pct)
 
     const interval = setInterval(() => {
@@ -45,27 +47,39 @@ export default function Relatorio({ cnae, municipio, raio_km, onVoltar }) {
         const response = await api.get('/relatorio', {
           params: { cnae, municipio, raio_km }
         })
-        
         if (isMounted) {
-          clearInterval(interval)
-          setPct(100)
-          setTimeout(() => {
-            setDados(response.data)
-            setLoading(false)
-          }, 400)
+          setDados(response.data)
         }
       } catch (err) {
         console.error('Erro ao buscar relatório:', err)
         if (isMounted) {
-          clearInterval(interval)
           const mensagem = err.response?.data?.detail || err.message || 'Erro desconhecido'
           setErro(mensagem)
-          setLoading(false)
         }
       }
     }
 
-    fetchRelatorio()
+    const fetchRecomendacao = async () => {
+      try {
+        const response = await api.get('/recomendar', {
+          params: { cnae, municipio, raio_km }
+        })
+        if (isMounted) {
+          setRecomendacao(response.data)
+        }
+      } catch (err) {
+        console.error('Erro ao buscar recomendação:', err)
+        // Não mostra erro pro usuário se falhar, apenas não exibe a seção
+      }
+    }
+
+    Promise.all([fetchRelatorio(), fetchRecomendacao()]).finally(() => {
+      if (isMounted) {
+        clearInterval(interval)
+        setPct(100)
+        setTimeout(() => setLoading(false), 400)
+      }
+    })
 
     return () => {
       isMounted = false
@@ -103,8 +117,8 @@ export default function Relatorio({ cnae, municipio, raio_km, onVoltar }) {
           <p className="erro-text">Erro ao gerar relatório</p>
           <p className="erro-hint">{erro}</p>
           {erro === 'Acesso premium necessário. Assine o plano para continuar.' && (
-            <button 
-              className="btn-premium" 
+            <button
+              className="btn-premium"
               onClick={() => window.location.href = '/'}
               style={{ marginTop: '1rem' }}
             >
@@ -194,6 +208,80 @@ export default function Relatorio({ cnae, municipio, raio_km, onVoltar }) {
               </div>
             )
           })}
+        </div>
+      )}
+
+      {/* NOVA SEÇÃO: Recomendação por Rua */}
+      {recomendacao && recomendacao.melhor_rua && (
+        <div className="card recomendacao-card">
+          <div className="rec-header">
+            <span className="rec-icon">📍</span>
+            <p className="section-label">Onde abrir? Recomendação por rua</p>
+          </div>
+
+          <div className="rec-melhor">
+            {recomendacao.melhor_rua.bairro_referencia && (
+              <div className="rec-bairro-ref">
+                <span className="rec-bairro-tag">{recomendacao.melhor_rua.bairro_referencia}</span>
+              </div>
+            )}
+            <h2 className="rec-rua">
+              {recomendacao.melhor_rua.emoji || '📍'} {recomendacao.melhor_rua.rua}
+            </h2>
+            <div className="rec-score">
+              <span className="rec-score-num">{recomendacao.melhor_rua.score}</span>
+              <span className="rec-score-max">/100</span>
+            </div>
+            <p className="rec-desc">{recomendacao.melhor_rua.recomendacao}</p>
+          </div>
+
+          <div className="rec-metrics">
+            <div className="rec-metric">
+              <span className="rec-metric-val">{recomendacao.melhor_rua.concorrentes}</span>
+              <span className="rec-metric-lbl">concorrentes</span>
+            </div>
+            <div className="rec-metric">
+              <span className="rec-metric-val">{recomendacao.melhor_rua.densidade_estimada}</span>
+              <span className="rec-metric-lbl">conc/km</span>
+            </div>
+            <div className="rec-metric">
+              <span className="rec-metric-val">★ {recomendacao.melhor_rua.nota_media}</span>
+              <span className="rec-metric-lbl">nota média</span>
+            </div>
+            <div className="rec-metric">
+              <span className="rec-metric-val">{recomendacao.melhor_rua.demanda_total}</span>
+              <span className="rec-metric-lbl">avaliações</span>
+            </div>
+          </div>
+
+          {recomendacao.melhor_rua.distancia_media_km && (
+            <div className="rec-gap">
+              📏 Distância média entre concorrentes: <strong>{Math.round(recomendacao.melhor_rua.distancia_media_km * 1000)}m</strong>
+              {recomendacao.melhor_rua.distancia_media_km >= 0.2 && " — Espaço generoso para se posicionar!"}
+            </div>
+          )}
+
+          <div className="rec-estrategia">
+            <strong>🎯 Estratégia aplicada:</strong> {recomendacao.descricao_estrategia}
+          </div>
+
+          {/* Ranking das ruas */}
+          {recomendacao.ranking && recomendacao.ranking.length > 1 && (
+            <div className="rec-ranking">
+              <p className="rec-ranking-title">📊 Top ruas na região</p>
+              {recomendacao.ranking.slice(0, 5).map((r, idx) => (
+                <div key={r.rua} className="rec-ranking-item">
+                  <span className="rec-ranking-pos">{idx + 1}º</span>
+                  <span className="rec-ranking-emoji">{r.emoji || '📍'}</span>
+                  <span className="rec-ranking-nome">{r.rua}</span>
+                  <div className="rec-ranking-bar-wrap">
+                    <div className="rec-ranking-bar" style={{ width: `${r.score}%` }} />
+                  </div>
+                  <span className="rec-ranking-score">{r.score}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

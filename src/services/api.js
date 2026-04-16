@@ -8,7 +8,9 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  // CORRIGIDO: usar a mesma chave que o AuthContext salva
+  const token = localStorage.getItem('saturado_token');
+  console.log('Token encontrado:', token ? 'Sim' : 'Não'); // debug
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
